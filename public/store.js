@@ -32,8 +32,8 @@ var stripeHandler = StripeCheckout.configure({
 
         var items = []
         var cartItemContainer = document.getElementsByClassName('cart-items')[0]
-        var carRows = cartItemContainer.getElementsByClassName('cart-row')
-        for (var i=0; i < carRows.length;i ++) {
+        var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+        for (var i=0; i < cartRows.length;i ++) {
             var carRow = cartRows[i]
             var quanitityElement = cartRows.getElementsByClassName('cart-quantity-input')[0]
             var quantity = quanitityElement.value
@@ -51,18 +51,26 @@ var stripeHandler = StripeCheckout.configure({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
-        })
+
+        }).then(function(res){
+            return res.json()
+        }).then(function(data){
+            alert (data.message)
+            var cartItems = document.getElementsByClassName('cart-items')[0]
+            while (cartItems.hasChildNodes()) {
+                cartItems.removeChild(cartItems.firstChild)
+        }
+        updateCartTotal()
+        }).catch(err){``
+            console.error(err.message)
+        }
 
     }
 })
 
 function purchaseClicked() {
-    // alert('Thank you for your purchase')
-    // var cartItems = document.getElementsByClassName('cart-items')[0]
-    // while (cartItems.hasChildNodes()) {
-    //     cartItems.removeChild(cartItems.firstChild)
-    // }
-    // updateCartTotal()
+    alert('Thank you for your purchase')
+    
     var priceElement = document.getElementsByClassName('cart-total-price')[0]
     var price = parseFloat(priceElement.innerText.replace('$','')) * 100 
     stripeHandler.open({
